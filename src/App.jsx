@@ -91,7 +91,7 @@ function App() {
                 <tr key={index}>
                   <td className='border border-slate-700 p-2'>{account.owner && "OWNER" || "RENTAL"}</td>
                   <td className='border border-slate-700 p-2'>
-                    <a className='text-blue-500' href={`https://travis.prodigycad.com/property-detail/${account['pid']}/${account['pYear']}`}>{account.streetPrimary}</a>
+                    <a className='text-blue-500' target='_blank' href={`https://travis.prodigycad.com/property-detail/${account['pid']}/${account['pYear']}`}>{account.streetPrimary}</a>
                   </td>
                   <td className='border border-slate-700 p-2'>{account.addrDeliveryLine}</td>
                 </tr>
