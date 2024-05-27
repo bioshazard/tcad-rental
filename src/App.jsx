@@ -47,7 +47,31 @@ function App() {
     setFilter( prev => (prev + 1) % filters.length )
   }
 
-  console.log(tcad.accounts)
+  // function compareFn(a, b) {
+  //   if (a is less than b by some ordering criterion) {
+  //     return -1;
+  //   } else if (a is greater than b by the ordering criterion) {
+  //     return 1;
+  //   }
+  //   // a must be equal to b
+  //   return 0;
+  // }
+
+  function addrSort(a, b) {
+    const aParts = a.streetPrimary.split(" ")
+    const bParts = b.streetPrimary.split(" ")
+    
+    if( aParts[1] < bParts[1] ) return -1;
+    if( aParts[1] > bParts[1] ) return 1;
+    if( aParts[0] < bParts[0] ) return -1;
+    if( aParts[0] > bParts[0] ) return 1;
+
+    // if( a.streetName < b.streetName ) return -1;
+    // if( a.streetName > b.streetName ) return 1;
+    // if( a.streetNum < b.streetNum ) return -1;
+    // if( a.streetNum > b.streetNum ) return 1;
+    return 0
+  }
 
   return (
     <div className='p-2 flex flex-col gap-2'>
@@ -76,27 +100,31 @@ function App() {
           </div>
           {/* <button onClick={() => getAccounts(2024)}>LOAD</button> */}
         </form>
-        <div className='flex flex-row gap-2'>
-          
-        </div>
         {tcad.accounts && (
           <div>
             <table className='border-separate border-spacing-2 border border-slate-500'>
-              <tr>
-                <th>STATUS</th>
-                <th>ADDRESS</th>
-                <th>MAILING</th>
-              </tr>
-              {tcad.accounts.filter( account => filters[filter] === "ALL" || filters[filter] === (account.owner && "OWNER" || "RENTAL") )
-              .map( (account, index) => (
-                <tr key={index}>
-                  <td className='border border-slate-700 p-2'>{account.owner && "OWNER" || "RENTAL"}</td>
-                  <td className='border border-slate-700 p-2'>
-                    <a className='text-blue-500' target='_blank' href={`https://travis.prodigycad.com/property-detail/${account['pid']}/${account['pYear']}`}>{account.streetPrimary}</a>
-                  </td>
-                  <td className='border border-slate-700 p-2'>{account.addrDeliveryLine}</td>
+              <thead>
+                <tr>
+                  <th>STATUS</th>
+                  <th>ADDRESS</th>
+                  <th>MAILING</th>
                 </tr>
-              ))}
+              </thead>
+              <tbody>
+                {tcad.accounts.filter( account => filters[filter] === "ALL" || filters[filter] === (account.owner && "OWNER" || "RENTAL") )
+                .sort( addrSort )
+                .map( (account, index) => (
+                  <tr key={index}>
+                    <td className='border border-slate-700 p-2'>{account.owner && "OWNER" || "RENTAL"}</td>
+                    <td className='border border-slate-700 p-2'>
+                      <a className='text-blue-500' target='_blank' href={`https://travis.prodigycad.com/property-detail/${account['pid']}/${account['pYear']}`}>
+                        {account.streetPrimary}
+                      </a>
+                    </td>
+                    <td className='border border-slate-700 p-2'>{account.addrDeliveryLine}</td>
+                  </tr>
+                ))}
+              </tbody>
             </table>
           </div>
         ) || (
