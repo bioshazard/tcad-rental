@@ -27,7 +27,7 @@ export function useTCAD(props) {
     return token
   }
 
-  async function loadAccounts(year, subdivision) {
+  async function loadAccounts(year, subdivisions) {
     const token = await getToken()
     const queryParams = "page=1&pageSize=20&sortField=geoID&sortDirection=ascending"
     const cadProperties = {
@@ -41,9 +41,7 @@ export function useTCAD(props) {
         "sortOrder": "geoID",
         "abstractSubdivisionName": {
             "operator": "in",
-            "value": [ // could support multiple...
-              subdivision
-            ]
+            "value": subdivisions
         }
       }
     }

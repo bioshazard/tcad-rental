@@ -15,30 +15,25 @@ function App() {
 
   useEffect( () => {
     const year = searchParams.get('year')
-    const subdivision = searchParams.get('subdivision')
-    if(!year || !subdivision) return
+    const subdivisions = searchParams.getAll('subdivision')
+    if(!year || !subdivisions) return
     
     // If year and subdivision are set, hydrate page
     console.log("HYDRATING...")
-    tcad.loadAccounts(year, subdivision)
+    tcad.loadAccounts(year, subdivisions)
 
     return () => {}
   }, [searchParams])
 
-  function serializeForm(event) {
-    const form = event.target;
-    const formData = new FormData(form);
-    const serializedData = {};
-    for (const [name, value] of formData.entries()) {
-      serializedData[name] = value;
-    }
-    return serializedData;
-  }
-
   async function handleSubmit(e) {
     e.preventDefault()
     // getAccounts(e.target.year.value)
-    let params = serializeForm(e);
+    // let params = serializeForm(e);
+    const params = {
+      year: e.target.year.value,
+      subdivision: e.target.subdivision.value.split(",")
+    }
+    console.log({params})
     setSearchParams(params);
   }
 
@@ -65,13 +60,19 @@ function App() {
           {/* count is {token} */}
         {/* </button> */}
         <form onSubmit={handleSubmit} className='flex flex-col gap-2'>
-          <div className='flex flex-row gap-2'>
-            <input type="text" name="subdivision" defaultValue={searchParams.get('subdivision')} placeholder="S123456" className='border'/>
-            <input type="text" name="year" defaultValue={searchParams.get('year') ?? new Date().getFullYear()} className='border'/>
+          <div className='flex flex-col gap-2'>
+            <div>
+              <span>Subdivision: </span>
+              <input type="text" name="subdivision" defaultValue={searchParams.getAll('subdivision').join(",")} placeholder="S123456,S234567" className='border py-1 px-2'/>
+            </div>
+            <div>
+              <span>Year: </span>
+              <input type="text" name="year" defaultValue={searchParams.get('year') ?? new Date().getFullYear()} className='border py-1 px-2'/>
+            </div>
           </div>
           <div className='flex flex-row gap-2'>
-            <button className='border p-2'>Search</button>
-            <button type='button' className='border p-2' onClick={rotateFilter}>Filter: {filters[filter]}</button>
+            <button className='border py-1 px-2 rounded'>Search</button>
+            <button type='button' className='border py-1 px-2 rounded' onClick={rotateFilter}>Filter: {filters[filter]}</button>
           </div>
           {/* <button onClick={() => getAccounts(2024)}>LOAD</button> */}
         </form>
