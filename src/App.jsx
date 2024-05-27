@@ -73,6 +73,10 @@ function App() {
     return 0
   }
 
+  const accounts = tcad.accounts
+    ? tcad.accounts.filter( account => filters[filter] === "ALL" || filters[filter] === (account.owner && "OWNER" || "RENTAL") )
+    : []
+
   return (
     <div className='p-2 flex flex-col gap-2'>
       <h1 className='text-2xl flex flex-row justify-between'>
@@ -96,11 +100,11 @@ function App() {
           </div>
           <div className='flex flex-row gap-2'>
             <button className='border py-1 px-2 rounded'>Search</button>
-            <button type='button' className='border py-1 px-2 rounded' onClick={rotateFilter}>Filter: {filters[filter]}</button>
+            <button type='button' className='border py-1 px-2 rounded' onClick={rotateFilter}>Filter: {filters[filter]} ({accounts.length})</button>
           </div>
           {/* <button onClick={() => getAccounts(2024)}>LOAD</button> */}
         </form>
-        {tcad.accounts && (
+        {accounts.length > 0 && (
           <div>
             <table className='border-separate border-spacing-2 border border-slate-500'>
               <thead>
@@ -111,7 +115,7 @@ function App() {
                 </tr>
               </thead>
               <tbody>
-                {tcad.accounts.filter( account => filters[filter] === "ALL" || filters[filter] === (account.owner && "OWNER" || "RENTAL") )
+                {accounts.filter( account => filters[filter] === "ALL" || filters[filter] === (account.owner && "OWNER" || "RENTAL") )
                 .sort( addrSort )
                 .map( (account, index) => (
                   <tr key={index}>
